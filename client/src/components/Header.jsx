@@ -1,4 +1,4 @@
-import { Navbar, Button } from "flowbite-react";
+import { Navbar, Button, Dropdown } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
 import { FaMoon } from "react-icons/fa";
 
@@ -20,6 +20,26 @@ export default function Header() {
                         Home
                     </Link>
                 </Navbar.Link>
+                <Dropdown
+                    inline
+                    label="Modelos"
+                >
+                    <Link to='/mm1'>
+                        <Dropdown.Item>
+                            M/M/1
+                        </Dropdown.Item>
+                    </Link>
+                    <Link to='/mm2'>
+                        <Dropdown.Item>
+                            M/M/2
+                        </Dropdown.Item>
+                    </Link>
+                    <Link to='/mm1n'>
+                        <Dropdown.Item>
+                            M/M/1/N
+                        </Dropdown.Item>
+                    </Link>
+                </Dropdown>
                 <Navbar.Link activate={path === "/about"} as={"div"}>
                     <Link to="/about">
                         About
