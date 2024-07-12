@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import MM1 from "./pages/MM1";
 import MM2 from "./pages/MM2";
 import MM1N from "./pages/MM1N";
+import FooterCom from "./components/Footer";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact-me" element={<ContactMe />} />
       </Routes>
+      <FooterCom />
     </BrowserRouter>
   )
 }
