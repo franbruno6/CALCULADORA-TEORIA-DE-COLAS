@@ -72,7 +72,6 @@ export default function MM2() {
 
     const calcularConSeleccion = (lambda, mu1, mu2, mu, pnResult, rho, lq, wq, tiempoLlegada, tiempoServicio) => {
         const r = mu2 / mu1;
-        const primerTermino = (2 * lambda + mu) * (mu1 * mu2);
         const aPrima = ((2 * lambda + mu) * (mu1 * mu2)) / (mu * (lambda + mu2));
         const p0 = (1 - rho) / (1 - rho + (lambda / aPrima));
         const ls = lambda / ((1 - rho) * (lambda + (1 - rho) * aPrima));
