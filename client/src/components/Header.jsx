@@ -15,7 +15,7 @@ export default function Header() {
                 <Navbar.Toggle />
             </div>
             <Navbar.Collapse>
-                <Navbar.Link activate={path === "/"} as={"div"}>
+                <Navbar.Link as={"div"}>
                     <Link to="/">
                         Home
                     </Link>
@@ -40,12 +40,12 @@ export default function Header() {
                         </Dropdown.Item>
                     </Link>
                 </Dropdown>
-                <Navbar.Link activate={path === "/about"} as={"div"}>
+                <Navbar.Link as={"div"}>
                     <Link to="/about">
                         About
                     </Link>
                 </Navbar.Link>
-                <Navbar.Link active={path === "/contact-me"} as={"div"}>
+                <Navbar.Link as={"div"}>
                     <Link to="/contact-me">
                         Contact Me
                     </Link>
