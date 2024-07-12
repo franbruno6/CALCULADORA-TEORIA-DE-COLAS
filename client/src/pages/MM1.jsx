@@ -7,7 +7,7 @@ export default function MM1() {
     const [mu, setMu] = useState(0);
     const [pax, setPax] = useState(0);
     const [pn, setPn] = useState(0);
-    const [calculando, setCalculando] = useState(true);
+    const [calculando, setCalculando] = useState(false);
     const [resultados, setResultados] = useState({});
     const [formData, setFormData] = useState({
         lambda: '',
@@ -23,16 +23,29 @@ export default function MM1() {
     });
 
     const calcularDatos = (lambda, mu, pax, pn) => {
-        setCalculando(true);
-
-        console.log(lambda, mu, pax, pn);
-
-        if (mu <= lambda) {
-            return setErrorMessage('La tasa de arribos debe ser menor al tiempo de servicio');
+        if (mu < lambda) {
+            setCalculando(false);
+            return setErrorMessage('La tasa de arribos debe ser menor o igual al tiempo de servicio');
         }
 
+        setCalculando(true);
+
+        if (lambda === mu) {
+            return setResultados({
+                rho: 1,
+                p0: 0,
+                lq: 'Indefinido',
+                ls: 'Indefinido',
+                wq: 'Indefinido',
+                ws: 'Indefinido',
+                pnResult: 0,
+                paxResult: 0,
+            });
+        };
+        
+
         const rho = lambda / mu;
-        const p0 = (1 - rho) * 100;
+        const p0 = 1 - rho;
         const lq = Math.pow(lambda, 2) / (mu * (mu - lambda));
         const ls = lambda / (mu - lambda);
         const wq = lambda / (mu * (mu - lambda));
@@ -47,33 +60,28 @@ export default function MM1() {
                 suma += (1-rho) * Math.pow(rho, i);
             }
             paxResult = 1 - suma;
-            paxResult = paxResult * 100;
         }
 
         if (pn > 0) {
             pnResult = (1 - (lambda / mu)) * Math.pow((lambda / mu), pn);
-            pnResult = pnResult * 100;
         }
 
         setResultados({
-            rho: rho.toFixed(2),
-            p0: p0.toFixed(2),
+            rho: (rho * 100).toFixed(2),
+            p0: (p0 * 100).toFixed(2),
             lq: lq.toFixed(2),
             ls: ls.toFixed(2),
             wq: wq.toFixed(2),
             ws: ws.toFixed(2),
-            paxResult: paxResult.toFixed(2),
-            pnResult: pnResult.toFixed(2),
+            paxResult: (paxResult * 100).toFixed(2),
+            pnResult: (pnResult * 100).toFixed(2),
         });
-        
-        console.log(resultados);
     };
 
     const handleChange = (e) => {
         const { id, value } = e.target;
         let isValid = true;
 
-        // Validación según el campo
         switch (id) {
             case 'lambda':
                 isValid = /^\d*\.?\d*$/.test(value);
@@ -105,7 +113,8 @@ export default function MM1() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-    
+        setErrorMessage(null);
+
         const lambda = parseFloat(formData.lambda);
         const mu = parseFloat(formData.mu);
     
@@ -113,30 +122,39 @@ export default function MM1() {
         const pn = formData.pn === '' ? 0 : parseInt(formData.pn);
 
         if (isNaN(lambda) || isNaN(mu)) {
+            const newValidity = { ...validity };
+
             if (isNaN(mu)) {
-                setValidity({ ...validity, mu: false });
+                newValidity.mu = false;
             }
             if (isNaN(lambda)) {
-                setValidity({ ...validity, lambda: false });
+                newValidity.lambda = false;
             }
+
+            setValidity(newValidity);
+            setCalculando(false);
+
             return setErrorMessage('Complete los campos requeridos (*) con números válidos');
         }
 
         if (validity.lambda && validity.mu && validity.pax && validity.pn) {
             setErrorMessage(null);
-            setLambda(formData.lambda);
-            setMu(formData.mu);
+
+            setLambda(lambda);
+            setMu(mu);
             setPax(pax);
             setPn(pn);
+            
             console.log('Formulario válido. Realizar cálculos.');
             calcularDatos(lambda, mu, pax, pn);
         } else {
+            setCalculando(false);
             return setErrorMessage('Corrija los campos inválidos');
         }
     };
     
     return (
-        <div className='min-h-screen mt-20'>
+        <div className='min-h-screen mt-10'>
             <div  className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
                 {/* left side */}
                 <div className='flex-1'>
@@ -185,7 +203,7 @@ export default function MM1() {
                             />
                         </div>
                         <div>
-                            <Label value='Prob. de que haya al menos n clientes en el sistema (Pn)' />
+                            <Label value='Prob. de que haya n clientes en el sistema (Pn)' />
                             <TextInput
                                 type='text'
                                 placeholder='Ingrese el valor de n (número entero)'
@@ -227,7 +245,7 @@ export default function MM1() {
                         <div className="flex flex-col sm:flex-row gap-4 w-full">
                             <div className="flex-1 p-3">
                                 <p>
-                                    ρ = {resultados.rho}
+                                    ρ = {resultados.rho}%
                                 </p>
                                 <p>
                                     Ls = {resultados.ls}

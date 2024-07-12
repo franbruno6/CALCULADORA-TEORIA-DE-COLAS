@@ -17,7 +17,6 @@ export default function App() {
         <Route path="/mm1" element={<MM1 />} />
         <Route path="/mm2" element={<MM2 />} />
         <Route path="/mm1n" element={<MM1N />} />
-        <Route path="/about" element={<About />} />
         <Route path="/contact-me" element={<ContactMe />} />
       </Routes>
       <FooterCom />

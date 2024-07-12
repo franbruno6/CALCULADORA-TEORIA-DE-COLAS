@@ -1,13 +1,12 @@
 import { Navbar, Button, Dropdown } from "flowbite-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { FaMoon } from "react-icons/fa";
 
 export default function Header() {
-    const path = useLocation().pathname;
 
     return (
         <Navbar className="border-b-2">
-            <Link to="/" className="selfself-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white">Calculadora Teoria de Colas</Link>
+            <Link to="/" className="selfself-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white">Calculadora Teoría de Colas</Link>
             <div className="flex gap-2 md:order-2">
                 <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
                     <FaMoon />
@@ -40,11 +39,6 @@ export default function Header() {
                         </Dropdown.Item>
                     </Link>
                 </Dropdown>
-                <Navbar.Link as={"div"}>
-                    <Link to="/about">
-                        About
-                    </Link>
-                </Navbar.Link>
                 <Navbar.Link as={"div"}>
                     <Link to="/contact-me">
                         Contact Me
