@@ -4,77 +4,155 @@ import { useState } from "react";
 export default function MM2() {
     const [errorMessage, setErrorMessage] = useState(null);
     const [lambda, setLambda] = useState(0);
-    const [mu, setMu] = useState(0);
-    const [pax, setPax] = useState(0);
+    const [mu1, setMu1] = useState(0);
+    const [mu2, setMu2] = useState(0);
     const [pn, setPn] = useState(0);
     const [calculando, setCalculando] = useState(false);
     const [resultados, setResultados] = useState({});
+    const [resultadosConSeleccion, setResultadosConSeleccion] = useState({});
+    const [resultadosSinSeleccion, setResultadosSinSeleccion] = useState({});
     const [formData, setFormData] = useState({
         lambda: '',
-        mu: '',
-        pax: '',
+        mu1: '',
+        mu2: '',
         pn: '',
     });
     const [validity, setValidity] = useState({
         lambda: true,
-        mu: true,
-        pax: true,
+        mu1: true,
+        mu2: true,
         pn: true,
     });
 
-    const calcularDatos = (lambda, mu, pax, pn) => {
-        if (mu < lambda) {
-            setCalculando(false);
-            return setErrorMessage('La tasa de arribos debe ser menor o igual al tiempo de servicio');
-        }
-
+    const calcularDatos = (lambda, mu1, mu2, pn) => {
+        const mu = mu1 + mu2;
+        
         setCalculando(true);
 
-        if (lambda === mu) {
-            return setResultados({
-                rho: 1,
-                p0: 0,
-                lq: 'Indefinido',
-                ls: 'Indefinido',
-                wq: 'Indefinido',
-                ws: 'Indefinido',
-                pnResult: 0,
-                paxResult: 0,
-            });
-        };
-        
-
         const rho = lambda / mu;
-        const p0 = 1 - rho;
-        const lq = Math.pow(lambda, 2) / (mu * (mu - lambda));
-        const ls = lambda / (mu - lambda);
-        const wq = lambda / (mu * (mu - lambda));
-        const ws = 1 / (mu - lambda);
+        const lq = Math.pow(rho, 2) / (1 - rho);
+        const wq = lq / lambda;
+        const tiempoServicio = 1 / mu;
+        const tiempoLlegada = 1 / lambda;
         
-        let paxResult = 0;
         let pnResult = 0;
-    
-        if (pax > 0) {
-            let suma = 0;
-            for (let i = 0; i < pax; i++) {
-                suma += (1-rho) * Math.pow(rho, i);
-            }
-            paxResult = 1 - suma;
-        }
-
         if (pn > 0) {
-            pnResult = (1 - (lambda / mu)) * Math.pow((lambda / mu), pn);
+            pnResult = (1 - pn) * Math.pow(rho, pn);
         }
 
-        setResultados({
-            rho: (rho * 100).toFixed(2),
-            p0: (p0 * 100).toFixed(2),
+        let p0 = 0;
+        let ls = 0;
+        let ws = 0;
+        let n = 0;
+        
+        if (mu1 === mu2) {
+            p0 = 1 - rho;
+            ls = rho / (1 - rho);
+            ws = ls / lambda;
+            n = lambda * ws;
+            
+            setResultados({
+                rho: rho.toFixed(2),
+                lq: lq.toFixed(2),
+                wq: wq.toFixed(2),
+                pnResult: (pnResult * 100).toFixed(2),
+                p0: (p0 * 100).toFixed(2),
+                ls: ls.toFixed(2),
+                ws: ws.toFixed(2),
+                n: n.toFixed(2),
+                tiempoServicio: tiempoServicio.toFixed(2),
+                tiempoLlegada: tiempoLlegada.toFixed(2),
+            });
+        }
+        else {
+            calcularConSeleccion(lambda, mu1, mu2, mu, pnResult, rho, lq, wq, tiempoLlegada, tiempoServicio);
+            calcularSinSeleccion(lambda, mu1, mu2, mu, pnResult, rho, lq, wq, tiempoLlegada, tiempoServicio);
+        }
+    };
+
+    const calcularConSeleccion = (lambda, mu1, mu2, mu, pnResult, rho, lq, wq, tiempoLlegada, tiempoServicio) => {
+        const r = mu2 / mu1;
+        const primerTermino = (2 * lambda + mu) * (mu1 * mu2);
+        const aPrima = ((2 * lambda + mu) * (mu1 * mu2)) / (mu * (lambda + mu2));
+        const p0 = (1 - rho) / (1 - rho + (lambda / aPrima));
+        const ls = lambda / ((1 - rho) * (lambda + (1 - rho) * aPrima));
+        const ws = ls / lambda;
+        const n = lambda * ws;
+
+        const a = (1 + Math.pow(r, 2));
+        const b = -(2 + Math.pow(r, 2));
+        const c = -(2 * r - 1) * (1 + r);
+
+        const pc = resolverEcuacionCuadratica(a, b, c);
+
+        resolverEcuacionCuadratica(a, b, c);
+
+        setResultadosConSeleccion({
+            rho: rho.toFixed(2),
             lq: lq.toFixed(2),
-            ls: ls.toFixed(2),
             wq: wq.toFixed(2),
-            ws: ws.toFixed(2),
-            paxResult: (paxResult * 100).toFixed(2),
             pnResult: (pnResult * 100).toFixed(2),
+            p0: (p0 * 100).toFixed(2),
+            ls: ls.toFixed(2),
+            ws: ws.toFixed(2),
+            n: n.toFixed(2),
+            tiempoServicio: tiempoServicio.toFixed(2),
+            tiempoLlegada: tiempoLlegada.toFixed(2),
+            aPrima: aPrima.toFixed(2),
+            pc: pc.toFixed(2),
+        });
+    };
+
+    const resolverEcuacionCuadratica = (a, b, c) => {
+        if (a === 0) {
+            throw new Error("El coeficiente 'a' no puede ser cero en una ecuación cuadrática.");
+        }
+    
+        const discriminante = Math.pow((b), 2) - 4 * (a) * (c);
+    
+        if (discriminante < 0) {
+            throw new Error("La ecuación no tiene raíces reales.");
+        }
+    
+        const raizDiscriminante = Math.sqrt(discriminante);
+    
+        const x1 = (-(b) + raizDiscriminante) / (2 * (a));
+        const x2 = (-(b) - raizDiscriminante) / (2 * (a));
+
+        console.log('x1 =', x1);
+        console.log('x2 =', x2);
+
+        if (x1 > 0) {
+            return x1;
+        }
+        else if (x2 > 0) {
+            return x2;
+        }
+    
+    }
+
+    const calcularSinSeleccion = (lambda, mu1, mu2, mu, pnResult, rho, lq, wq, tiempoLlegada, tiempoServicio) => {
+        const r = mu2 / mu1;
+        const a = (2 * mu1 * mu2) / (mu1 + mu2);
+        const p0 = (1 - rho) / (1 - rho + (lambda / a));
+        const ls = lambda / ((1 - rho) * (lambda + (1 - rho) * a));
+        const n = ls;
+        const pc = 1 - ((r * (1 + r)) / (1 + Math.pow(r, 2)));
+        const ws = ls / lambda;
+
+        setResultadosSinSeleccion({
+            rho: rho.toFixed(2),
+            lq: lq.toFixed(2),
+            wq: wq.toFixed(2),
+            pnResult: (pnResult * 100).toFixed(2),
+            p0: (p0 * 100).toFixed(2),
+            ls: ls.toFixed(2),
+            ws: ws.toFixed(2),
+            n: n.toFixed(2),
+            tiempoServicio: tiempoServicio.toFixed(2),
+            tiempoLlegada: tiempoLlegada.toFixed(2),
+            pc: pc.toFixed(2),
+            a: a.toFixed(2),
         });
     };
 
@@ -86,15 +164,11 @@ export default function MM2() {
             case 'lambda':
                 isValid = /^\d*\.?\d*$/.test(value);
                 break;
-            case 'mu':
+            case 'mu1':
                 isValid = /^\d*\.?\d*$/.test(value);
                 break;
-            case 'pax':
-                if (value === '') {
-                    isValid = true;
-                    break;
-                }
-                isValid = /^\d+$/.test(value);
+            case 'mu2':
+                isValid = /^\d*\.?\d*$/.test(value);
                 break;
             case 'pn':
                 if (value === '') {
@@ -116,16 +190,24 @@ export default function MM2() {
         setErrorMessage(null);
 
         const lambda = parseFloat(formData.lambda);
-        const mu = parseFloat(formData.mu);
-    
-        const pax = formData.pax === '' ? 0 : parseInt(formData.pax);
+        const mu1 = parseFloat(formData.mu1);
+        const mu2 = parseFloat(formData.mu2);
+
+        if (mu1 < mu2) {
+            setErrorMessage('El tiempo de servicio 1 debe ser mayor o igual al tiempo de servicio 2');
+            return setCalculando(false);
+        }
+
         const pn = formData.pn === '' ? 0 : parseInt(formData.pn);
 
-        if (isNaN(lambda) || isNaN(mu)) {
+        if (isNaN(lambda) || isNaN(mu1) || isNaN(mu2)) {
             const newValidity = { ...validity };
 
-            if (isNaN(mu)) {
-                newValidity.mu = false;
+            if (isNaN(mu1)) {
+                newValidity.mu1 = false;
+            }
+            if (isNaN(mu2)) {
+                newValidity.mu2 = false;
             }
             if (isNaN(lambda)) {
                 newValidity.lambda = false;
@@ -137,16 +219,16 @@ export default function MM2() {
             return setErrorMessage('Complete los campos requeridos (*) con números válidos');
         }
 
-        if (validity.lambda && validity.mu && validity.pax && validity.pn) {
+        if (validity.lambda && validity.mu1 && validity.mu2 && validity.pn) {
             setErrorMessage(null);
 
             setLambda(lambda);
-            setMu(mu);
-            setPax(pax);
+            setMu1(mu1);
+            setMu2(mu2);
             setPn(pn);
             
             console.log('Formulario válido. Realizar cálculos.');
-            calcularDatos(lambda, mu, pax, pn);
+            calcularDatos(lambda, mu1, mu2, pn);
         } else {
             setCalculando(false);
             return setErrorMessage('Corrija los campos inválidos');
@@ -154,7 +236,7 @@ export default function MM2() {
     };
     
     return (
-        <div className='min-h-screen mt-10'>
+        <div className='mt-10 pb-40'>
             <div  className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
                 {/* left side */}
                 <div className='flex-1'>
@@ -183,25 +265,25 @@ export default function MM2() {
                                 />
                         </div>
                         <div>
-                            <Label value='Tiempo de servicio (µ)*' />
+                            <Label value='Tiempo de servicio 1 (igual o más rápido - µ1)*' />
                             <TextInput
                                 type='text'
-                                placeholder='Ingrese el tiempo de servicio'
-                                id='mu'
-                                value= {formData.mu}
+                                placeholder='Ingrese el tiempo de servicio 1'
+                                id='mu1'
+                                value= {formData.mu1}
                                 onChange={handleChange}
-                                color={validity.mu ? 'success' : 'failure'}
+                                color={validity.mu1 ? 'success' : 'failure'}
                             />
                         </div>
                         <div>
-                            <Label value='Prob de que haya al menos x clientes en el sistema (Pax)' />
+                            <Label value='Tiempo de servicio 2 (igual o más lento - µ2)*' />
                             <TextInput
                                 type='text'
-                                placeholder='Ingrese el valor de x (número entero)'
-                                id='pax'
-                                value={formData.pax}
+                                placeholder='Ingrese el tiempo de servicio 2'
+                                id='mu2'
+                                value= {formData.mu2}
                                 onChange={handleChange}
-                                color={validity.pax ? 'success' : 'failure'}
+                                color={validity.mu2 ? 'success' : 'failure'}
                             />
                         </div>
                         <div>
@@ -236,60 +318,173 @@ export default function MM2() {
                 calculando && (
                     <div className="flex flex-col items-center p-3 max-w-3xl mx-auto gap-5 bg-gray-200 rounded-lg">
                         <h3 className="text-center text-xl font-semibold dark:text-white">
-                            Resultados
+                            { mu1 === mu2 ? (
+                                <>
+                                    Resultados servidores misma velocidad
+                                </>
+                                ) : (
+                                <>
+                                    Resultados servidores distinta velocidad
+                                </>
+                            )}
                         </h3>
                         <div className="flex flex-row gap-5">
                             <p>λ (Lambda) = {lambda}</p>
-                            <p>µ (Mu) = {mu}</p>
-                            <p>Pax = {pax}</p>
+                            <p>µ1 (Mu) = {mu1}</p>
+                            <p>µ2 (Mu) = {mu2}</p>
                             <p>Pn = {pn}</p>
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-4 w-full">
-                            <div className="flex-1 p-3">
-                                <p>
-                                    ρ = {resultados.rho}%
-                                </p>
-                                <p>
-                                    Ls = {resultados.ls}
-                                </p>
-                                <p>
-                                    Lq = {resultados.lq}
-                                </p>
-                                <p>
-                                    { pax > 0 ? (
-                                        <>
-                                            Pa{pax} = {resultados.paxResult}%
-                                        </>
-                                    ) : (
-                                        <>
-                                            Pax no solicitado.
-                                        </>
-                                    )}
-                                </p>
+                        { mu1 === mu2 ? (
+                            <div className="flex flex-col sm:flex-row gap-4 w-full">
+                                <div className="flex-1 p-3">
+                                    <p>
+                                        ρ = {resultados.rho}
+                                    </p>
+                                    <p>
+                                        Ls = {resultados.ls}
+                                    </p>
+                                    <p>
+                                        Lq = {resultados.lq}
+                                    </p>
+                                    <p>
+                                        Tiempo de llegada = {resultados.tiempoLlegada}
+                                    </p>
+                                    <p>
+                                        Nro medio clientes en sistema (N) = {resultados.n}
+                                    </p>
+                                </div>
+                                <div className="flex-1 p-3">
+                                    <p>
+                                        P0 = {resultados.p0}%
+                                    </p>
+                                    <p>
+                                        Ws = {resultados.ws}
+                                    </p>
+                                    <p>
+                                        Wq = {resultados.wq}
+                                    </p>
+                                    <p>
+                                        Tiempo de servicio = {resultados.tiempoServicio}
+                                    </p>
+                                    <p>
+                                        { pn > 0 ? (
+                                            <>
+                                                P{pn} = {resultados.pnResult}%
+                                            </>
+                                        ) : (
+                                            <>
+                                                Pn no solicitado.
+                                            </>
+                                        )}
+                                    </p>
+                                </div>
                             </div>
-                            <div className="flex-1 p-3">
-                                <p>
-                                    P0 = {resultados.p0}%
-                                </p>
-                                <p>
-                                    Ws = {resultados.ws}
-                                </p>
-                                <p>
-                                    Wq = {resultados.wq}
-                                </p>
-                                <p>
-                                    { pn > 0 ? (
-                                        <>
-                                            P{pn} = {resultados.pnResult}%
-                                        </>
-                                    ) : (
-                                        <>
-                                            Pn no solicitado.
-                                        </>
-                                    )}
-                                </p>
-                            </div>
-                        </div>
+                        ) : (
+                            <>
+                                <div className="text-xl">Con selección de servidor</div>
+                                <div className="flex flex-col sm:flex-row gap-4 w-full">
+                                    <div className="flex-1 p-3">
+                                        <p>
+                                            ρ = {resultadosConSeleccion.rho}
+                                        </p>
+                                        <p>
+                                            Ls = {resultadosConSeleccion.ls}
+                                        </p>
+                                        <p>
+                                            Lq = {resultadosConSeleccion.lq}
+                                        </p>
+                                        <p>
+                                            Tiempo de llegada = {resultadosConSeleccion.tiempoLlegada}
+                                        </p>
+                                        <p>
+                                            Nro medio clientes en sistema (N) = {resultadosConSeleccion.n}
+                                        </p>
+                                        <p>
+                                            Punto crítico (Pc) = {resultadosConSeleccion.pc}
+                                        </p>
+                                    </div>
+                                    <div className="flex-1 p-3">
+                                        <p>
+                                            P0 = {resultadosConSeleccion.p0}%
+                                        </p>
+                                        <p>
+                                            Ws = {resultadosConSeleccion.ws}
+                                        </p>
+                                        <p>
+                                            Wq = {resultadosConSeleccion.wq}
+                                        </p>
+                                        <p>
+                                            Tiempo de servicio = {resultadosConSeleccion.tiempoServicio}
+                                        </p>
+                                        <p>
+                                            { pn > 0 ? (
+                                                <>
+                                                    P{pn} = {resultadosConSeleccion.pnResult}%
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Pn no solicitado.
+                                                </>
+                                            )}
+                                        </p>
+                                        <p>
+                                            a prima = {resultadosConSeleccion.aPrima}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="text-xl">Sin selección de servidor</div>
+                                <div className="flex flex-col sm:flex-row gap-4 w-full">
+                                    <div className="flex-1 p-3">
+                                        <p>
+                                            ρ = {resultadosSinSeleccion.rho}
+                                        </p>
+                                        <p>
+                                            Ls = {resultadosSinSeleccion.ls}
+                                        </p>
+                                        <p>
+                                            Lq = {resultadosSinSeleccion.lq}
+                                        </p>
+                                        <p>
+                                            Tiempo de llegada = {resultadosSinSeleccion.tiempoLlegada}
+                                        </p>
+                                        <p>
+                                            Nro medio clientes en sistema (N) = {resultadosSinSeleccion.n}
+                                        </p>
+                                        <p>
+                                            Punto crítico (Pc) = {resultadosSinSeleccion.pc}
+                                        </p>
+                                    </div>
+                                    <div className="flex-1 p-3">
+                                        <p>
+                                            P0 = {resultadosSinSeleccion.p0}%
+                                        </p>
+                                        <p>
+                                            Ws = {resultadosSinSeleccion.ws}
+                                        </p>
+                                        <p>
+                                            Wq = {resultadosSinSeleccion.wq}
+                                        </p>
+                                        <p>
+                                            Tiempo de servicio = {resultadosSinSeleccion.tiempoServicio}
+                                        </p>
+                                        <p>
+                                            { pn > 0 ? (
+                                                <>
+                                                    P{pn} = {resultadosSinSeleccion.pnResult}%
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Pn no solicitado.
+                                                </>
+                                            )}
+                                        </p>
+                                        <p>
+                                            a prima = {resultadosSinSeleccion.a}
+                                        </p>
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 )
             }

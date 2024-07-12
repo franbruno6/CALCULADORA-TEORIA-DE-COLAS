@@ -6,7 +6,7 @@ export default function MM1N() {
     const [lambda, setLambda] = useState(0);
     const [mu, setMu] = useState(0);
     const [capacidadMaxima, setCapacidadMaxima] = useState(0);
-    const [calculando, setCalculando] = useState(true);
+    const [calculando, setCalculando] = useState(false);
     const [resultados, setResultados] = useState({});
     const [formData, setFormData] = useState({
         lambda: '',
@@ -19,7 +19,7 @@ export default function MM1N() {
         capacidadMaxima: true,
     });
 
-    const calcularDatos = (lambda, mu, capacidadMaxima, pn) => {
+    const calcularDatos = (lambda, mu, capacidadMaxima) => {
 
         setCalculando(true);
 
@@ -65,7 +65,7 @@ export default function MM1N() {
         const wb = wq / (1 - p0);
 
         setResultados({
-            rho: (rho * 100).toFixed(2),
+            rho: rho.toFixed(2),
             pb: (pb * 100).toFixed(2),
             tau: tau.toFixed(2),
             yi: yi.toFixed(2),
@@ -155,7 +155,7 @@ export default function MM1N() {
     };
     
     return (
-        <div className='min-h-screen mt-10'>
+        <div className='mt-10'>
             <div  className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
                 {/* left side */}
                 <div className='flex-1'>
@@ -236,7 +236,7 @@ export default function MM1N() {
                         <div className="flex flex-col sm:flex-row gap-4 w-full">
                             <div className="flex-1 p-3">
                                 <p>
-                                    ρ = {resultados.rho}%
+                                    ρ = {resultados.rho}
                                 </p>
                                 <p>
                                     ρ efectivo = {resultados.rhoEfectiva}%

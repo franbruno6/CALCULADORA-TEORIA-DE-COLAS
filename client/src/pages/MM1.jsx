@@ -23,26 +23,7 @@ export default function MM1() {
     });
 
     const calcularDatos = (lambda, mu, pax, pn) => {
-        if (mu < lambda) {
-            setCalculando(false);
-            return setErrorMessage('La tasa de arribos debe ser menor o igual al tiempo de servicio');
-        }
-
         setCalculando(true);
-
-        if (lambda === mu) {
-            return setResultados({
-                rho: 1,
-                p0: 0,
-                lq: 'Indefinido',
-                ls: 'Indefinido',
-                wq: 'Indefinido',
-                ws: 'Indefinido',
-                pnResult: 0,
-                paxResult: 0,
-            });
-        };
-        
 
         const rho = lambda / mu;
         const p0 = 1 - rho;
@@ -50,6 +31,8 @@ export default function MM1() {
         const ls = lambda / (mu - lambda);
         const wq = lambda / (mu * (mu - lambda));
         const ws = 1 / (mu - lambda);
+        const tiempoLlegada = 1 / lambda;
+        const tiempoServicio = 1 / mu;
         
         let paxResult = 0;
         let pnResult = 0;
@@ -67,7 +50,7 @@ export default function MM1() {
         }
 
         setResultados({
-            rho: (rho * 100).toFixed(2),
+            rho: rho.toFixed(2),
             p0: (p0 * 100).toFixed(2),
             lq: lq.toFixed(2),
             ls: ls.toFixed(2),
@@ -75,6 +58,8 @@ export default function MM1() {
             ws: ws.toFixed(2),
             paxResult: (paxResult * 100).toFixed(2),
             pnResult: (pnResult * 100).toFixed(2),
+            tiempoLlegada: tiempoLlegada.toFixed(2),
+            tiempoServicio: tiempoServicio.toFixed(2),
         });
     };
 
@@ -154,7 +139,7 @@ export default function MM1() {
     };
     
     return (
-        <div className='min-h-screen mt-10'>
+        <div className='mt-10'>
             <div  className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
                 {/* left side */}
                 <div className='flex-1'>
@@ -163,6 +148,8 @@ export default function MM1() {
                     </h2>
                     <p>
                         El modelo M/M/1 es un modelo de colas que se caracteriza por tener un solo servidor y una sola fila de espera.
+                    </p>
+                    <p>
                         La distribución de llegadas y de servicio son de tipo exponencial.
                     </p>
                 </div>
@@ -245,13 +232,16 @@ export default function MM1() {
                         <div className="flex flex-col sm:flex-row gap-4 w-full">
                             <div className="flex-1 p-3">
                                 <p>
-                                    ρ = {resultados.rho}%
+                                    ρ = {resultados.rho}
                                 </p>
                                 <p>
                                     Ls = {resultados.ls}
                                 </p>
                                 <p>
                                     Lq = {resultados.lq}
+                                </p>
+                                <p>
+                                    Tiempo de llegada = {resultados.tiempoLlegada}
                                 </p>
                                 <p>
                                     { pax > 0 ? (
@@ -274,6 +264,9 @@ export default function MM1() {
                                 </p>
                                 <p>
                                     Wq = {resultados.wq}
+                                </p>
+                                <p>
+                                    Tiempo de servicio = {resultados.tiempoServicio}
                                 </p>
                                 <p>
                                     { pn > 0 ? (
