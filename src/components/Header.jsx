@@ -23,19 +23,29 @@ export default function Header() {
                     inline
                     label="Modelos"
                 >
-                    <Link to='/mm1'>
+                    <Link to='/MM1'>
                         <Dropdown.Item>
                             M/M/1
                         </Dropdown.Item>
                     </Link>
-                    <Link to='/mm2'>
+                    <Link to='/MM2'>
                         <Dropdown.Item>
                             M/M/2
                         </Dropdown.Item>
                     </Link>
-                    <Link to='/mm1n'>
+                    <Link to='/MM1N'>
                         <Dropdown.Item>
                             M/M/1/N
+                        </Dropdown.Item>
+                    </Link>
+                    <Link to='/MG1'>
+                        <Dropdown.Item>
+                            M/G/1
+                        </Dropdown.Item>
+                    </Link>
+                    <Link to='/MD1'>
+                        <Dropdown.Item>
+                            M/D/1
                         </Dropdown.Item>
                     </Link>
                 </Dropdown>
