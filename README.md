@@ -8,12 +8,11 @@ Asignatura a cargo de Gabriela Caliva, es una materia de 5to Año de la carrera 
 
 La aplicación desarrollada es una aplicación Javascript, utilizando React y Tailwind.
 
-La calculadora consta de 5 sistemas posibles para calcular los cuales son:
-- M/M/1: Esta capa se encarga de presentar la información al usuario y de recibir las interacciones del usuario.
-- M/M/2: Esta capa se utiliza para definir las entidades que representan los objetos del mundo real en la aplicación.
-- M/M/1/N: En esta capa, se encuentra la lógica de negocio de la aplicación.
-- M/G/1: Esta capa se encarga de interactuar con la base de datos.
-- M/D/1:
+- M/M/1: Modelo de un solo servidor con tiempos de llegada y servicio exponenciales. Útil para sistemas con un solo canal de atención.
+- M/M/2: Modelo de dos servidores con tiempos de llegada y servicio exponenciales. Adecuado para sistemas con dos canales de atención.
+- M/M/1/N: Modelo de un solo servidor con una capacidad máxima (N) y tiempos de llegada y servicio exponenciales. Ideal para sistemas con capacidad limitada.
+- M/G/1: Modelo de un solo servidor con tiempos de llegada exponenciales y tiempos de servicio arbitrarios (general). Aplicable a sistemas con tiempos de servicio variados.
+- M/D/1: Modelo de un solo servidor con tiempos de llegada exponenciales y tiempos de servicio determinísticos. Útil para sistemas con tiempos de servicio constantes.
 
 ## Autor
 
