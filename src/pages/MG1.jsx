@@ -176,7 +176,7 @@ export default function MG1() {
             {/* Resultados */}
             {
                 calculando && (
-                    <div className="flex flex-col items-center p-3 max-w-3xl mx-auto gap-5 bg-gray-200 rounded-lg">
+                    <div className="flex flex-col items-center p-3 max-w-3xl mx-auto gap-5 bg-gray-200 rounded-lg dark:bg-slate-700">
                         <h3 className="text-center text-xl font-semibold dark:text-white">
                             Resultados
                         </h3>

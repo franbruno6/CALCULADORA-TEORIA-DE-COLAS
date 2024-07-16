@@ -97,10 +97,6 @@ export default function MM1N() {
                 isValid = /^\d*\.?\d*$/.test(value);
                 break;
             case 'capacidadMaxima':
-                if (value === '') {
-                    isValid = false;
-                    break;
-                }
                 isValid = /^\d+$/.test(value);
                 break;
             default:
@@ -118,7 +114,7 @@ export default function MM1N() {
         const lambda = parseFloat(formData.lambda);
         const mu = parseFloat(formData.mu);
         
-        const capacidadMaxima = formData.capacidadMaxima === '' ? 0 : parseInt(formData.capacidadMaxima);
+        const capacidadMaxima = parseInt(formData.capacidadMaxima);
 
         if (isNaN(lambda) || isNaN(mu) || isNaN(capacidadMaxima)) {
             const newValidity = { ...validity };
@@ -224,7 +220,7 @@ export default function MM1N() {
             {/* Resultados */}
             {
                 calculando && (
-                    <div className="flex flex-col items-center p-3 max-w-3xl mx-auto gap-5 bg-gray-200 rounded-lg">
+                    <div className="flex flex-col items-center p-3 max-w-3xl mx-auto gap-5 bg-gray-200 rounded-lg dark:bg-slate-700">
                         <h3 className="text-center text-xl font-semibold dark:text-white">
                             Resultados
                         </h3>

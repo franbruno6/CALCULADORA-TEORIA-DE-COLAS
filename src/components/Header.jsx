@@ -23,41 +23,67 @@ export default function Header() {
                         Home
                     </Link>
                 </Navbar.Link>
-                <Dropdown
-                    inline
-                    label="Modelos"
-                >
-                    <Link to='/MM1'>
-                        <Dropdown.Item>
-                            M/M/1
-                        </Dropdown.Item>
-                    </Link>
-                    <Link to='/MM2'>
-                        <Dropdown.Item>
-                            M/M/2
-                        </Dropdown.Item>
-                    </Link>
-                    <Link to='/MM1N'>
-                        <Dropdown.Item>
-                            M/M/1/N
-                        </Dropdown.Item>
-                    </Link>
-                    <Link to='/MG1'>
-                        <Dropdown.Item>
-                            M/G/1
-                        </Dropdown.Item>
-                    </Link>
-                    <Link to='/MD1'>
-                        <Dropdown.Item>
-                            M/D/1
-                        </Dropdown.Item>
-                    </Link>
-                </Dropdown>
-                <Navbar.Link as={"div"}>
-                    <Link to="/contact-me">
-                        Contact Me
-                    </Link>
-                </Navbar.Link>
+                <div className="flex items-center justify-between w-full">
+                    <div className="md:hidden flex flex-row space-x-4 lg:flex">
+                        <Navbar.Link as={"div"}>
+                            <Link to="/MM1">
+                                M/M/1
+                            </Link>
+                        </Navbar.Link>
+                        <Navbar.Link as={"div"}>
+                            <Link to="/MM2">
+                                M/M/2
+                            </Link>
+                        </Navbar.Link>
+                        <Navbar.Link as={"div"}>
+                            <Link to="/MM1N">
+                                M/M/1/N
+                            </Link>
+                        </Navbar.Link>
+                        <Navbar.Link as={"div"}>
+                            <Link to="/MG1">
+                                M/G/1
+                            </Link>
+                        </Navbar.Link>
+                        <Navbar.Link as={"div"}>
+                            <Link to="/MD1">
+                                M/D/1
+                            </Link>
+                        </Navbar.Link>
+                    </div>
+                    <div className="hidden md:block lg:hidden">
+                        <Dropdown
+                            inline
+                            label="Modelos"
+                        >
+                            <Link to='/MM1'>
+                                <Dropdown.Item>
+                                    M/M/1
+                                </Dropdown.Item>
+                            </Link>
+                            <Link to='/MM2'>
+                                <Dropdown.Item>
+                                    M/M/2
+                                </Dropdown.Item>
+                            </Link>
+                            <Link to='/MM1N'>
+                                <Dropdown.Item>
+                                    M/M/1/N
+                                </Dropdown.Item>
+                            </Link>
+                            <Link to='/MG1'>
+                                <Dropdown.Item>
+                                    M/G/1
+                                </Dropdown.Item>
+                            </Link>
+                            <Link to='/MD1'>
+                                <Dropdown.Item>
+                                    M/D/1
+                                </Dropdown.Item>
+                            </Link>
+                        </Dropdown>
+                    </div>
+                </div>
             </Navbar.Collapse>
         </Navbar>
     )

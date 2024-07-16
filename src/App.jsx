@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import ContactMe from "./pages/ContactMe";
 import Header from "./components/Header";
 import MM1 from "./pages/MM1";
 import MM2 from "./pages/MM2";
@@ -20,7 +19,6 @@ export default function App() {
         <Route path="/MM1N" element={<MM1N />} />
         <Route path="/MG1" element={<MG1 />} />
         <Route path="/MD1" element={<MD1 />} />
-        <Route path="/contact-me" element={<ContactMe />} />
       </Routes>
       <FooterCom />
     </BrowserRouter>
