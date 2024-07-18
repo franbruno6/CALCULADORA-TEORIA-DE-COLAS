@@ -33,10 +33,10 @@ export default function MM1() {
         const ws = 1 / (mu - lambda);
         const tiempoLlegada = 1 / lambda;
         const tiempoServicio = 1 / mu;
-        
+
         let paxResult = 0;
         let pnResult = 0;
-    
+
         if (pax > 0) {
             let suma = 0;
             for (let i = 0; i < pax; i++) {
