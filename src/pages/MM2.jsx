@@ -84,8 +84,6 @@ export default function MM2() {
 
         const pc = resolverEcuacionCuadratica(a, b, c);
 
-        resolverEcuacionCuadratica(a, b, c);
-
         setResultadosConSeleccion({
             rho: rho.toFixed(2),
             lq: lq.toFixed(2),
@@ -127,7 +125,6 @@ export default function MM2() {
         else if (x2 > 0) {
             return x2;
         }
-    
     }
 
     const calcularSinSeleccion = (lambda, mu1, mu2, mu, pnResult, rho, lq, wq, tiempoLlegada, tiempoServicio) => {
@@ -478,7 +475,7 @@ export default function MM2() {
                                             )}
                                         </p>
                                         <p>
-                                            a prima = {resultadosSinSeleccion.a}
+                                            a = {resultadosSinSeleccion.a}
                                         </p>
                                     </div>
                                 </div>

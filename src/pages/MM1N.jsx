@@ -27,7 +27,6 @@ export default function MM1N() {
         const pb = ((Math.pow(rho, capacidadMaxima)) * (1 - rho)) / (1 - Math.pow(rho, capacidadMaxima + 1));
         const tau = lambda * pb;
         const yi = lambda - tau;
-        const yo = yi;
         
         let ls = 0;
         if (rho === 1){
@@ -36,7 +35,7 @@ export default function MM1N() {
         else {
             ls = (rho / (1 - rho)) - ((capacidadMaxima + 1) * Math.pow(rho, capacidadMaxima + 1)) / (1 - Math.pow(rho, capacidadMaxima + 1));
         }
-
+        
         let lq = 0;
         if (rho === 1){
             lq = (capacidadMaxima * (capacidadMaxima - 1)) / (2 * (capacidadMaxima + 1)); 
@@ -46,6 +45,7 @@ export default function MM1N() {
         }
         
         const p0 = (1 - rho) / (1 - Math.pow(rho, capacidadMaxima + 1));
+        const yo = mu * (1 - p0);
         const pnResult = Math.pow(rho, capacidadMaxima) * p0;
         const lambdaEfectiva = lambda * (1 - pnResult);
         const rhoEfectiva = lambdaEfectiva / mu;
@@ -81,8 +81,6 @@ export default function MM1N() {
             lb: lb.toFixed(2),
             wb: wb.toFixed(2),
         });
-
-        console.log('Resultados: ', 'rho(ok)' + rho, 'pb ' + pb, 'tau ' + tau, 'yi ' + yi, 'yo ' + yo, 'ls(ok)' + ls, 'lq(ok)' + lq, 'p0(ok)' + p0, 'pnresult ' + pnResult, 'lamefec(ok)' + lambdaEfectiva, 'rhoefec ' + rhoEfectiva, 'wq(ok)' + wq, 'ws(ok)' + ws, 'lb ' + lb, 'wb ' + wb);
     };
 
     const handleChange = (e) => {
@@ -251,6 +249,9 @@ export default function MM1N() {
                                 </p>
                                 <p>
                                     Yi = {resultados.yi}
+                                </p>
+                                <p>
+                                    Pn = {resultados.pnResult}%
                                 </p>
                             </div>
                             <div className="flex-1 p-3">

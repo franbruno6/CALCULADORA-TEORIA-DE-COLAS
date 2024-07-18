@@ -134,7 +134,7 @@ export default function MD1() {
                                 color={validity.mu ? 'success' : 'failure'}
                             />
                         </div>
-                        <div>
+                        {/* <div>
                             <Label value='Desvío estandar (σ)' />
                             <TextInput
                                 type='text'
@@ -144,7 +144,7 @@ export default function MD1() {
                                 onChange={handleChange}
                                 color={validity.desvioEstandar ? 'success' : 'failure'}
                             />
-                        </div>
+                        </div> */}
                         {
                             errorMessage && (
                             <Alert color='failure'>
@@ -171,7 +171,7 @@ export default function MD1() {
                         <div className="flex flex-row gap-5">
                             <p>λ (Lambda) = {lambda}</p>
                             <p>µ (Mu) = {mu}</p>
-                            <p>σ (Desvío estandar)= {desvioEstandar}</p>
+                            {/* <p>σ (Desvío estandar)= {desvioEstandar}</p> */}
                         </div>
                         <div className="flex flex-col sm:flex-row gap-4 w-full">
                             <div className="flex-1 p-3">
