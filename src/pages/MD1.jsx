@@ -5,7 +5,7 @@ export default function MD1() {
     const [errorMessage, setErrorMessage] = useState(null);
     const [lambda, setLambda] = useState(0);
     const [mu, setMu] = useState(0);
-    const [desvioEstandar, setDesvioEstandar] = useState(0);
+    // const [desvioEstandar, setDesvioEstandar] = useState(0);
     const [calculando, setCalculando] = useState(false);
     const [resultados, setResultados] = useState({});
     const [formData, setFormData] = useState({
@@ -87,7 +87,7 @@ export default function MD1() {
 
             setLambda(lambda);
             setMu(mu);
-            setDesvioEstandar(desvioEstandar);
+            // setDesvioEstandar(desvioEstandar);
             
             console.log('Formulario válido. Realizar cálculos.');
             calcularDatos(lambda, mu);
